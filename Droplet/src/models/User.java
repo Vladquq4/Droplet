@@ -1,7 +1,10 @@
 package models;
 
+import services.UserDataManager;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class User implements Comparable<User>{
     private String username;
@@ -41,6 +44,22 @@ public class User implements Comparable<User>{
     public boolean hasGameInLibrary(Game game) {
         return library.contains(game);
     }
+    public void deleteAccount(Scanner scanner, List<User> users) {
+        System.out.print("Type 'DELETE' to confirm: ");
+        String confirmDelete = scanner.nextLine().toLowerCase();
+        if (confirmDelete.equals("delete")) {
+            boolean success = UserDataManager.deleteUser(users, this.username);
+            if (success) {
+                System.out.println("Your account has been deleted.");
+                UserDataManager.deleteSession();
+            } else {
+                System.out.println("Account deletion failed. Please try again.");
+            }
+        } else {
+            System.out.println("Account deletion cancelled.");
+        }
+    }
+
 
     public String getUsername() { return username; }
     public String getPassword() { return password; }

@@ -1,6 +1,6 @@
 package main;
 
-
+import exceptions.DuplicateUserException;
 import models.Game;
 import models.Store;
 import models.User;
@@ -12,43 +12,50 @@ import java.util.List;
 
 public class GameSystem {
     public static void main(String[] args) {
-
         Store store = new Store("C:\\Users\\vlada\\IdeaProjects\\Droplet\\games.json");
         List<User> users = UserDataManager.loadUsers();
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Welcome to Droplet!");
 
-        if (args.length == 3 && args[0].equalsIgnoreCase("login")) {
+        User loggedInUser = null;
+
+        if (args.length == 1 && args[0].equalsIgnoreCase("continue")) {
+            loggedInUser = UserDataManager.loadSession();
+            if (loggedInUser != null) {
+                System.out.println("Continuing session for " + loggedInUser.getUsername());
+                showMenu(scanner, store, loggedInUser, users);
+            } else {
+                System.out.println("No saved session found. Please log in or register.");
+                loggedInUser = startNewSession(scanner, store, users);
+            }
+        } else if (args.length == 3 && args[0].equalsIgnoreCase("login")) {
             String username = args[1];
             String password = args[2];
-            User loggedInUser = findUserByName(users, username);
+            loggedInUser = findUserByName(users, username);
 
             if (loggedInUser != null && loggedInUser.getPassword().equals(password)) {
                 System.out.println("Welcome, " + loggedInUser.getUsername() + "!");
+                UserDataManager.saveSession(loggedInUser);
                 showMenu(scanner, store, loggedInUser, users);
             } else {
                 System.out.println("Login failed: Invalid username or password.");
             }
         } else {
+            System.out.println("Enter 'new' to start a new session or 'continue' to resume the last session:");
+            String sessionChoice = scanner.nextLine().toLowerCase();
 
-            System.out.println("Enter 'register' to create a new account or 'login' to sign in:");
-            String command = scanner.nextLine();
-
-            switch (command.toLowerCase()) {
-                case "register":
-                    registerUser(users, scanner);
-                    break;
-                case "login":
-                    User loggedInUser = loginUser(users, scanner);
-                    if (loggedInUser != null) {
-                        System.out.println("Welcome, " + loggedInUser.getUsername() + "!");
-                        showMenu(scanner, store, loggedInUser, users);
-                    }
-                    break;
-                default:
-                    System.out.println("Invalid command.");
-                    break;
+            if ("continue".equals(sessionChoice)) {
+                loggedInUser = UserDataManager.loadSession();
+                if (loggedInUser != null) {
+                    System.out.println("Continuing session for " + loggedInUser.getUsername());
+                    showMenu(scanner, store, loggedInUser, users);
+                } else {
+                    System.out.println("No saved session found. Starting new session.");
+                    loggedInUser = startNewSession(scanner, store, users);
+                }
+            } else {
+                loggedInUser = startNewSession(scanner, store, users);
             }
         }
 
@@ -60,14 +67,48 @@ public class GameSystem {
         while (running) {
             delayMenu();
             System.out.println("\n--- Main Menu ---");
+            System.out.println("1. Browse Store");
+            System.out.println("2. Social");
+            System.out.println("3. Account");
+            System.out.println("4. Logout");
+            System.out.print("Choose an option: ");
+
+            if (users.isEmpty() || !users.contains(loggedInUser)) {
+                running = false;
+            }
+
+            String choice = scanner.nextLine();
+            switch (choice) {
+                case "1":
+                    showBrowseStoreMenu(scanner, store, loggedInUser);
+                    break;
+                case "2":
+                    showSocialMenu(scanner, users, loggedInUser);
+                    break;
+                case "3":
+                    showAccountMenu(scanner, loggedInUser, users);
+                    break;
+                case "4":
+                    System.out.println("Logging out...");
+                    UserDataManager.saveUsers(users);
+                    running = false;
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+                    break;
+            }
+        }
+    }
+    private static void showBrowseStoreMenu(Scanner scanner, Store store, User loggedInUser) {
+        boolean running = true;
+        while (running) {
+            System.out.println("\n--- Browse Store ---");
             System.out.println("1. Browse Games");
             System.out.println("2. Purchase Game");
-            System.out.println("3. View Account");
-            System.out.println("4. Sort Games by Price");
-            System.out.println("5. Sort Games by Name");
-            System.out.println("6. Sort Users by Username");
-            System.out.println("7. Group Games by Genre");
-            System.out.println("8. Logout");
+            System.out.println("3. Sort Games by Price");
+            System.out.println("4. Sort Games by Name");
+            System.out.println("5. Group Games by Genre");
+            System.out.println("6. Back to Main Menu");
             System.out.print("Choose an option: ");
 
             String choice = scanner.nextLine();
@@ -79,28 +120,85 @@ public class GameSystem {
                     purchaseGame(scanner, store, loggedInUser);
                     break;
                 case "3":
-                    System.out.println("Account Username: " + loggedInUser.getUsername());
-                    break;
-                case "4":
                     System.out.println("Sorting games by price...");
                     store.sortGamesByPrice();
                     break;
-                case "5":
+                case "4":
                     store.getAvailableGames().sort(Comparator.comparing(Game::getName));
                     store.browseStore();
                     break;
+                case "5":
+                    System.out.println("Grouping games by genre...");
+                    store.groupGamesByGenre();
+                    break;
                 case "6":
+                    running = false;
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+                    break;
+            }
+        }
+    }
+    private static void showSocialMenu(Scanner scanner, List<User> users, User loggedInUser) {
+        boolean running = true;
+        while (running) {
+            System.out.println("\n--- Social ---");
+            System.out.println("1. Sort Users by Username");
+            System.out.println("2. Add Friend");
+            System.out.println("3. Inbox");
+            System.out.println("4. Back to Main Menu");
+            System.out.print("Choose an option: ");
+
+            String choice = scanner.nextLine();
+            switch (choice) {
+                case "1":
                     System.out.println("Sorting users by username...");
                     users.sort(User::compareTo);
                     users.forEach(System.out::println);
                     break;
-                case "7":
-                    System.out.println("Grouping games by genre...");
-                    store.groupGamesByGenre();
+                case "2":
+                    System.out.println("Add Friend option - no logic for now.");
                     break;
-                case "8":
-                    System.out.println("Logging out...");
-                    UserDataManager.saveUsers(users);
+                case "3":
+                    System.out.println("Inbox option - no logic for now.");
+                    break;
+                case "4":
+                    running = false;
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+                    break;
+            }
+        }
+    }
+
+    private static void showAccountMenu(Scanner scanner, User loggedInUser, List<User> users) {
+        boolean running = true;
+        while (running) {
+            System.out.println("\n--- Account ---");
+            System.out.println("1. View Account");
+            System.out.println("2. Delete Account");
+            System.out.println("3. Add Funds");
+            System.out.println("4. Back to Main Menu");
+            System.out.print("Choose an option: ");
+
+            String choice = scanner.nextLine();
+            switch (choice) {
+                case "1":
+                    System.out.println("Account Username: " + loggedInUser.getUsername());
+                    break;
+                case "2":
+                    loggedInUser.deleteAccount(scanner, users);
+
+                    if (users.isEmpty() || !users.contains(loggedInUser)) {
+                        running = false;
+                    }
+                    break;
+                case "3":
+                    System.out.println("Add Funds option - no logic for now.");
+                    break;
+                case "4":
                     running = false;
                     break;
                 default:
@@ -122,14 +220,13 @@ public class GameSystem {
         }
     }
 
-    private static void registerUser(List<User> users, Scanner scanner) {
+    private static User registerUser(List<User> users, Scanner scanner) throws DuplicateUserException {
         System.out.print("Enter username: ");
         String username = scanner.nextLine();
 
         for (User user : users) {
             if (user.getUsername().equals(username)) {
-                System.out.println("Username already exists. Please choose another.");
-                return;
+                throw new DuplicateUserException("Username already exists. Please choose another.");
             }
         }
 
@@ -140,6 +237,7 @@ public class GameSystem {
         users.add(newUser);
         UserDataManager.saveUsers(users);
         System.out.println("User registered: " + username);
+        return newUser;
     }
     private static User loginUser(List<User> users, Scanner scanner) {
         System.out.print("Enter username: ");
@@ -160,9 +258,9 @@ public class GameSystem {
     }
     private static void delayMenu() {
         try {
-            Thread.sleep(1000); // Pauses execution for 1000 milliseconds (1 second)
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // Restore interrupted status
+            Thread.currentThread().interrupt();
             e.printStackTrace();
         }
     }
@@ -173,4 +271,37 @@ public class GameSystem {
     private static Game findGameByName(List<Game> games, String name) {
         return games.stream().filter(g -> g.getName().equals(name)).findFirst().orElse(null);
     }
+
+    private static User startNewSession(Scanner scanner, Store store, List<User> users) {
+        System.out.println("Enter 'register' to create a new account or 'login' to sign in:");
+        String command = scanner.nextLine().toLowerCase();
+
+        User newUser = null;
+        switch (command) {
+            case "register":
+                boolean validUsername = false;
+                while (!validUsername) {
+                    try {
+                        newUser = registerUser(users, scanner);
+                        validUsername = true;
+                    } catch (DuplicateUserException e) {
+                        System.out.println(e.getMessage());
+                        System.out.println("Please choose a different username.");
+                    }
+                }
+                break;
+            case "login":
+                newUser = loginUser(users, scanner);
+                break;
+            default:
+                System.out.println("Invalid command.");
+        }
+
+        if (newUser != null) {
+            UserDataManager.saveSession(newUser);
+            showMenu(scanner, store, newUser, users);
+        }
+        return newUser;
+    }
+
 }

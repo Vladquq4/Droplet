@@ -2,6 +2,7 @@ package models;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -27,13 +28,13 @@ public class Store {
             e.printStackTrace();
             return null;
         } catch (Exception e) {
-            e.printStackTrace();  // Catch any JSON parsing exceptions
+            e.printStackTrace();
             return null;
         }
     }
 
     public void sortGamesByPrice() {
-        availableGames.sort(null); // Uses compareTo from Game
+        availableGames.sort(null);
         System.out.println("Games sorted by price:");
         availableGames.forEach(System.out::println);
     }

@@ -28,7 +28,7 @@ public class Game implements I, Comparable<Game> {
     }
 
     public void sortAchievements() {
-        achievements.sort(null); // Uses compareTo from Achievement
+        achievements.sort(null);
         System.out.println("Achievements sorted alphabetically:");
         achievements.forEach(System.out::println);
     }
@@ -45,7 +45,7 @@ public class Game implements I, Comparable<Game> {
     }
     @Override
     public int compareTo(Game other) {
-        return Float.compare(this.price, other.price); // Compare by price
+        return Float.compare(this.price, other.price);
     }
     @Override
     public void purchase() {
