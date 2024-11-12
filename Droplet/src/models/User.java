@@ -37,8 +37,61 @@ public class User implements Comparable<User>{
         library.add(game);
     }
 
-    public void addFunds(float amount) {
-        wallet += amount;
+    public void addFunds(Scanner scanner) {
+        System.out.println("Choose a payment option:");
+        System.out.println("1. Use Existing Card");
+        System.out.println("2. Add New Card");
+        String choice = scanner.nextLine();
+
+        if (choice.equals("1")) {
+            // Attempt to retrieve existing card info
+            CardInfo cardInfo = UserDataManager.loadCardInfo(username);
+            if (cardInfo != null) {
+                String lastFourDigits = cardInfo.getCardNumber().substring(cardInfo.getCardNumber().length() - 4);
+                System.out.println("Using card: " + cardInfo.getCardholderName() + " **** " + lastFourDigits);
+
+                System.out.print("Enter amount to add: ");
+                float amount = Float.parseFloat(scanner.nextLine());
+                wallet += amount;
+                System.out.println("Funds added successfully. New balance: $" + wallet);
+            } else {
+                System.out.println("No existing card found. Please add a new card.");
+                // Fall through to option 2 below
+                choice = "2";
+            }
+        }
+
+        if (choice.equals("2")) {
+            System.out.print("Enter Cardholder Name: ");
+            String cardholderName = scanner.nextLine();
+            System.out.print("Enter Card Number: ");
+            String cardNumber = scanner.nextLine();
+            System.out.print("Enter Expiry Date (MM/YY): ");
+            String expiryDate = scanner.nextLine();
+            System.out.print("Enter CVV: ");
+            String cvv = scanner.nextLine();
+
+            System.out.print("Enter amount to add: ");
+            float amount = Float.parseFloat(scanner.nextLine());
+            wallet += amount;
+            System.out.println("Funds added successfully. New balance: $" + wallet);
+
+            // Save card information
+            UserDataManager.saveCardInfo(username, cardholderName, cardNumber, expiryDate, cvv);
+        } else {
+            System.out.println("Invalid choice.");
+        }
+    }
+
+    public boolean deductFunds(float amount) {
+        if (wallet >= amount) {
+            wallet -= amount;
+            System.out.println("Funds deducted successfully. New balance: $" + wallet);
+            return true;
+        } else {
+            System.out.println("Insufficient funds for this transaction.");
+            return false;
+        }
     }
 
     public boolean hasGameInLibrary(Game game) {

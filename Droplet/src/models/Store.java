@@ -54,8 +54,11 @@ public class Store {
     public boolean purchaseGame(User user, Game game) {
         if (user.getWallet() >= game.getPrice()) {
             user.addGameToLibrary(game);
-            user.addFunds(-game.getPrice());
+            user.deductFunds(game.getPrice());
+            System.out.println("Purchase successful. " + game.getName() + " added to your library.");
             return true;
+        } else {
+            System.out.println("Insufficient funds to purchase " + game.getName() + ".");
         }
         return false;
     }

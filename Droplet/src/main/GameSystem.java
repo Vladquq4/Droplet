@@ -18,16 +18,16 @@ public class GameSystem {
 
         System.out.println("Welcome to Droplet!");
 
-        User loggedInUser = null;
+        User loggedInUser;
 
         if (args.length == 1 && args[0].equalsIgnoreCase("continue")) {
-            loggedInUser = UserDataManager.loadSession();
+            loggedInUser = UserDataManager.loadSession(users);
             if (loggedInUser != null) {
                 System.out.println("Continuing session for " + loggedInUser.getUsername());
                 showMenu(scanner, store, loggedInUser, users);
             } else {
                 System.out.println("No saved session found. Please log in or register.");
-                loggedInUser = startNewSession(scanner, store, users);
+                startNewSession(scanner, store, users);
             }
         } else if (args.length == 3 && args[0].equalsIgnoreCase("login")) {
             String username = args[1];
@@ -46,22 +46,21 @@ public class GameSystem {
             String sessionChoice = scanner.nextLine().toLowerCase();
 
             if ("continue".equals(sessionChoice)) {
-                loggedInUser = UserDataManager.loadSession();
+                loggedInUser = UserDataManager.loadSession(users);
                 if (loggedInUser != null) {
                     System.out.println("Continuing session for " + loggedInUser.getUsername());
                     showMenu(scanner, store, loggedInUser, users);
                 } else {
                     System.out.println("No saved session found. Starting new session.");
-                    loggedInUser = startNewSession(scanner, store, users);
+                    startNewSession(scanner, store, users);
                 }
             } else {
-                loggedInUser = startNewSession(scanner, store, users);
+                startNewSession(scanner, store, users);
             }
         }
 
         scanner.close();
     }
-
     private static void showMenu(Scanner scanner, Store store, User loggedInUser, List<User> users) {
         boolean running = true;
         while (running) {
@@ -72,9 +71,9 @@ public class GameSystem {
             System.out.println("3. Account");
             System.out.println("4. Logout");
             System.out.print("Choose an option: ");
-
             if (users.isEmpty() || !users.contains(loggedInUser)) {
                 running = false;
+                break;
             }
 
             String choice = scanner.nextLine();
@@ -172,7 +171,6 @@ public class GameSystem {
             }
         }
     }
-
     private static void showAccountMenu(Scanner scanner, User loggedInUser, List<User> users) {
         boolean running = true;
         while (running) {
@@ -187,6 +185,7 @@ public class GameSystem {
             switch (choice) {
                 case "1":
                     System.out.println("Account Username: " + loggedInUser.getUsername());
+                    System.out.println("Wallet Balance: $" + loggedInUser.getWallet());
                     break;
                 case "2":
                     loggedInUser.deleteAccount(scanner, users);
@@ -196,7 +195,7 @@ public class GameSystem {
                     }
                     break;
                 case "3":
-                    System.out.println("Add Funds option - no logic for now.");
+                    loggedInUser.addFunds(scanner);
                     break;
                 case "4":
                     running = false;
@@ -207,7 +206,6 @@ public class GameSystem {
             }
         }
     }
-
     private static void purchaseGame(Scanner scanner, Store store, User user) {
         System.out.print("Enter the name of the game to purchase: ");
         String gameName = scanner.nextLine();
@@ -219,7 +217,6 @@ public class GameSystem {
             System.out.println("Purchase failed. Game may not exist or insufficient funds.");
         }
     }
-
     private static User registerUser(List<User> users, Scanner scanner) throws DuplicateUserException {
         System.out.print("Enter username: ");
         String username = scanner.nextLine();
@@ -239,13 +236,24 @@ public class GameSystem {
         System.out.println("User registered: " + username);
         return newUser;
     }
-    private static User loginUser(List<User> users, Scanner scanner) {
+    public static User loginUser(List<User> users, Scanner scanner) {
         System.out.print("Enter username: ");
         String username = scanner.nextLine();
 
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
 
+        for (User user : users) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                System.out.println("Login successful: " + username);
+                return user;
+            }
+        }
+
+        System.out.println("Login failed: Invalid username or password.");
+        return null;
+    }
+    public static User loginUserSession(List<User> users, String username, String password) {
         for (User user : users) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 System.out.println("Login successful: " + username);
@@ -267,15 +275,12 @@ public class GameSystem {
     private static User findUserByName(List<User> users, String username) {
         return users.stream().filter(u -> u.getUsername().equals(username)).findFirst().orElse(null);
     }
-
     private static Game findGameByName(List<Game> games, String name) {
         return games.stream().filter(g -> g.getName().equals(name)).findFirst().orElse(null);
     }
-
     private static User startNewSession(Scanner scanner, Store store, List<User> users) {
         System.out.println("Enter 'register' to create a new account or 'login' to sign in:");
         String command = scanner.nextLine().toLowerCase();
-
         User newUser = null;
         switch (command) {
             case "register":
