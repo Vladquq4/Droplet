@@ -1,6 +1,7 @@
 package main;
 
 import exceptions.DuplicateUserException;
+import exceptions.InvalidGameException;
 import models.Game;
 import models.Store;
 import models.User;
@@ -195,7 +196,11 @@ public class GameSystem {
                     }
                     break;
                 case "3":
-                    loggedInUser.addFunds(scanner);
+                    try {
+                        loggedInUser.addFunds(scanner);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
                     break;
                 case "4":
                     running = false;
@@ -211,24 +216,28 @@ public class GameSystem {
         String gameName = scanner.nextLine();
         Game game = findGameByName(store.getAvailableGames(), gameName);
 
-        if (game != null && store.purchaseGame(user, game)) {
-            System.out.println("Game purchased: " + gameName);
-        } else {
-            System.out.println("Purchase failed. Game may not exist or insufficient funds.");
+        try {
+            if (store.purchaseGame(user, game)) {
+                if (game != null) {
+                    System.out.println("Game purchased: " + gameName);
+                } else {
+                    System.out.println("Purchase failed. Game may not exist or insufficient funds.");
+                }
+            } else {
+                System.out.println("Purchase failed. Game may not exist or insufficient funds.");
+            }
+        } catch (InvalidGameException e) {
+            throw new RuntimeException(e);
         }
     }
     private static User registerUser(List<User> users, Scanner scanner) throws DuplicateUserException {
-        System.out.print("Enter username: ");
-        String username = scanner.nextLine();
-
+        String username = validateTextInput(scanner, "Enter username: ", 3, 20);
         for (User user : users) {
             if (user.getUsername().equals(username)) {
                 throw new DuplicateUserException("Username already exists. Please choose another.");
             }
         }
-
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
+        String password = validateTextInput(scanner, "Enter password: ", 3, 50);
 
         User newUser = new User(username, password);
         users.add(newUser);
@@ -237,11 +246,8 @@ public class GameSystem {
         return newUser;
     }
     public static User loginUser(List<User> users, Scanner scanner) {
-        System.out.print("Enter username: ");
-        String username = scanner.nextLine();
-
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
+        String username = validateTextInput(scanner, "Enter username: ", 3, 20);
+        String password = validateTextInput(scanner, "Enter password: ", 3, 50);
 
         for (User user : users) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
@@ -307,6 +313,21 @@ public class GameSystem {
             showMenu(scanner, store, newUser, users);
         }
         return newUser;
+    }
+    public static String validateTextInput(Scanner scanner, String prompt, int minLength, int maxLength) {
+        String input;
+        while (true) {
+            System.out.print(prompt);
+            input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println("Input cannot be empty. Please try again.");
+            } else if (input.length() < minLength || input.length() > maxLength) {
+                System.out.println("Input must be between " + minLength + " and " + maxLength + " characters.");
+            } else {
+                break;
+            }
+        }
+        return input;
     }
 
 }

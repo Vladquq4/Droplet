@@ -2,6 +2,7 @@ package models;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import exceptions.InvalidGameException;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -51,16 +52,21 @@ public class Store {
     }
 
 
-    public boolean purchaseGame(User user, Game game) {
+    public boolean purchaseGame(User user, Game game) throws InvalidGameException {
+        if (game == null) {
+            throw new InvalidGameException("The selected game does not exist.");
+        }
+        if (game.getPrice() < 0) {
+            throw new InvalidGameException("The game '" + game.getName() + "' has an invalid price: $" + game.getPrice());
+        }
         if (user.getWallet() >= game.getPrice()) {
             user.addGameToLibrary(game);
             user.deductFunds(game.getPrice());
             System.out.println("Purchase successful. " + game.getName() + " added to your library.");
-            return true;
         } else {
             System.out.println("Insufficient funds to purchase " + game.getName() + ".");
         }
-        return false;
+        return true;
     }
 
     public void browseStore() {

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import static main.GameSystem.validateTextInput;
+
 public class User implements Comparable<User>{
     private String username;
     private String password;
@@ -41,48 +43,82 @@ public class User implements Comparable<User>{
         System.out.println("Choose a payment option:");
         System.out.println("1. Use Existing Card");
         System.out.println("2. Add New Card");
-        String choice = scanner.nextLine();
+        String choice = validateTextInput(scanner, "Your choice: ", 1, 1);
 
         if (choice.equals("1")) {
-            // Attempt to retrieve existing card info
             CardInfo cardInfo = UserDataManager.loadCardInfo(username);
             if (cardInfo != null) {
                 String lastFourDigits = cardInfo.getCardNumber().substring(cardInfo.getCardNumber().length() - 4);
                 System.out.println("Using card: " + cardInfo.getCardholderName() + " **** " + lastFourDigits);
 
-                System.out.print("Enter amount to add: ");
-                float amount = Float.parseFloat(scanner.nextLine());
+                float amount = validatePositiveFloatInput(scanner, "Enter amount to add: ");
                 wallet += amount;
                 System.out.println("Funds added successfully. New balance: $" + wallet);
             } else {
                 System.out.println("No existing card found. Please add a new card.");
-                // Fall through to option 2 below
                 choice = "2";
             }
         }
 
         if (choice.equals("2")) {
-            System.out.print("Enter Cardholder Name: ");
-            String cardholderName = scanner.nextLine();
-            System.out.print("Enter Card Number: ");
-            String cardNumber = scanner.nextLine();
-            System.out.print("Enter Expiry Date (MM/YY): ");
-            String expiryDate = scanner.nextLine();
-            System.out.print("Enter CVV: ");
-            String cvv = scanner.nextLine();
+            String cardholderName = validateTextInput(scanner, "Enter Cardholder Name: ", 3, 50);
+            String cardNumber = validateCardNumber(scanner);
+            String expiryDate = validateExpiryDate(scanner);
+            String cvv = validateTextInput(scanner, "Enter CVV: ", 3, 3);
 
-            System.out.print("Enter amount to add: ");
-            float amount = Float.parseFloat(scanner.nextLine());
+            float amount = validatePositiveFloatInput(scanner, "Enter amount to add: ");
             wallet += amount;
             System.out.println("Funds added successfully. New balance: $" + wallet);
 
-            // Save card information
             UserDataManager.saveCardInfo(username, cardholderName, cardNumber, expiryDate, cvv);
         } else {
             System.out.println("Invalid choice.");
         }
     }
+    public static float validatePositiveFloatInput(Scanner scanner, String prompt) {
+        while (true) {
+            try {
+                System.out.print(prompt);
+                float value = Float.parseFloat(scanner.nextLine().trim());
+                if (value <= 0) {
+                    System.out.println("Value must be positive. Please try again.");
+                } else {
+                    return value;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number. Please enter a valid positive number.");
+            }
+        }
+    }
 
+    public static String validateCardNumber(Scanner scanner) {
+        while (true) {
+            System.out.print("Enter Card Number: ");
+            String cardNumber = scanner.nextLine().trim();
+            if (cardNumber.matches("\\d{16}")) {
+                return cardNumber;
+            } else {
+                System.out.println("Invalid card number. Please enter a 16-digit number.");
+            }
+        }
+    }
+
+    public static String validateExpiryDate(Scanner scanner) {
+        while (true) {
+            System.out.print("Enter Expiry Date (MM/YY): ");
+            String expiryDate = scanner.nextLine().trim();
+            if (expiryDate.matches("(0[1-9]|1[0-2])/\\d{2}")) {
+                return expiryDate;
+            } else {
+                System.out.println("Invalid expiry date. Please use the format MM/YY.");
+            }
+        }
+    }
+    private void validateAmount(float amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than zero.");
+        }
+    }
     public boolean deductFunds(float amount) {
         if (wallet >= amount) {
             wallet -= amount;
@@ -93,7 +129,6 @@ public class User implements Comparable<User>{
             return false;
         }
     }
-
     public boolean hasGameInLibrary(Game game) {
         return library.contains(game);
     }
@@ -112,8 +147,6 @@ public class User implements Comparable<User>{
             System.out.println("Account deletion cancelled.");
         }
     }
-
-
     public String getUsername() { return username; }
     public String getPassword() { return password; }
     public float getWallet() { return wallet; }

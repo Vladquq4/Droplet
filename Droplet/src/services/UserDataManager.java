@@ -7,10 +7,7 @@ import main.GameSystem;
 import models.User;
 import models.CardInfo;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -28,8 +25,13 @@ public class UserDataManager {
             e.printStackTrace();
         }
     }
-
     public static List<User> loadUsers() {
+        File file = new File(USER_FILE);
+        if (!file.exists()) {
+            System.out.println("User file not found: " + USER_FILE);
+            throw new RuntimeException(new FileNotFoundException("File not found: " + USER_FILE));
+        }
+
         try (FileReader reader = new FileReader(USER_FILE)) {
             Type userListType = new TypeToken<ArrayList<User>>(){}.getType();
             return gson.fromJson(reader, userListType);
@@ -38,7 +40,6 @@ public class UserDataManager {
             return new ArrayList<>();
         }
     }
-
     public static boolean deleteUser(List<User> users, String username) {
         User userToDelete = null;
         for (User user : users) {
@@ -55,7 +56,6 @@ public class UserDataManager {
         }
         return false; // User not found
     }
-
     public static void saveSession(User user) {
         try (FileWriter writer2 = new FileWriter("session.json")) {
             Map<String, String> sessionData = new HashMap<>();
@@ -67,7 +67,6 @@ public class UserDataManager {
             System.out.println("Error saving session: " + e.getMessage());
         }
     }
-
     public static User loadSession(List<User> users) {
         // Try to load the session from the file
         try (FileReader reader2 = new FileReader("session.json")) {
@@ -91,7 +90,6 @@ public class UserDataManager {
         System.out.println("No active session. Please log in.");
         return null;
     }
-
     public static void deleteSession() {
         File sessionFile = new File("session.json");
         if (sessionFile.exists()) {
@@ -104,12 +102,10 @@ public class UserDataManager {
             System.out.println("No session file found to delete.");
         }
     }
-
     public static CardInfo loadCardInfo(String username) {
         Map<String, CardInfo> cardInfoMap = loadAllCardInfo();
         return cardInfoMap != null ? cardInfoMap.get(username) : null;
     }
-
     public static Map<String, CardInfo> loadAllCardInfo() {
         try (FileReader reader = new FileReader("cardData.json")) {
             Type cardInfoType = new TypeToken<Map<String, CardInfo>>() {}.getType();
@@ -119,7 +115,6 @@ public class UserDataManager {
             return new HashMap<>();
         }
     }
-
     public static void saveCardInfo(String username, String cardholderName, String cardNumber, String expiryDate, String cvv) {
         try (FileReader reader = new FileReader("cardData.json")) {
             Type cardInfoType = new TypeToken<Map<String, CardInfo>>() {}.getType();
