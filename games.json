@@ -1,0 +1,308 @@
+[
+  {
+    "name": "Cyberpunk 2077",
+    "price": 59.99,
+    "genre": "RPG",
+    "achievements": [
+      { "name": "First Achievement" },
+      { "name": "Night City Explorer" }
+    ]
+  },
+  {
+    "name": "Hades",
+    "price": 19.99,
+    "genre": "Roguelike",
+    "achievements": [
+      { "name": "God Mode" },
+      { "name": "Speedrun" }
+    ]
+  },
+  {
+    "name": "The Witcher 3",
+    "price": 39.99,
+    "genre": "RPG",
+    "achievements": [
+      { "name": "Monster Slayer" },
+      { "name": "Gwent Master" }
+    ]
+  },
+  {
+    "name": "Celeste",
+    "price": 14.99,
+    "genre": "Platformer",
+    "achievements": [
+      { "name": "Peak Climber" },
+      { "name": "Speedrunner" }
+    ]
+  },
+  {
+    "name": "Dark Souls III",
+    "price": 49.99,
+    "genre": "Action RPG",
+    "achievements": [
+      { "name": "First Bonfire" },
+      { "name": "Lord of Hollows" }
+    ]
+  },
+  {
+    "name": "The Elder Scrolls V: Skyrim",
+    "price": 29.99,
+    "genre": "RPG",
+    "achievements": [
+      { "name": "Dragonborn" },
+      { "name": "Unbound" }
+    ]
+  },
+  {
+    "name": "Overwatch",
+    "price": 39.99,
+    "genre": "FPS",
+    "achievements": [
+      { "name": "The Quick and the Dead" },
+      { "name": "Double Kill" }
+    ]
+  },
+  {
+    "name": "Minecraft",
+    "price": 26.95,
+    "genre": "Sandbox",
+    "achievements": [
+      { "name": "Survivalist" },
+      { "name": "Adventurer" }
+    ]
+  },
+  {
+    "name": "The Legend of Zelda: Breath of the Wild",
+    "price": 59.99,
+    "genre": "Action-Adventure",
+    "achievements": [
+      { "name": "Master of the Wild" },
+      { "name": "Hylian Hero" }
+    ]
+  },
+  {
+    "name": "Red Dead Redemption 2",
+    "price": 59.99,
+    "genre": "Action-Adventure",
+    "achievements": [
+      { "name": "Honor Among Thieves" },
+      { "name": "The Outlaw" }
+    ]
+  },
+  {
+    "name": "Hollow Knight",
+    "price": 14.99,
+    "genre": "Metroidvania",
+    "achievements": [
+      { "name": "Grimm's Curse" },
+      { "name": "True Knight" }
+    ]
+  },
+  {
+    "name": "Stardew Valley",
+    "price": 14.99,
+    "genre": "Simulation",
+    "achievements": [
+      { "name": "Farm Fresh" },
+      { "name": "The Socialite" }
+    ]
+  },
+  {
+    "name": "Assassin's Creed Valhalla",
+    "price": 59.99,
+    "genre": "Action RPG",
+    "achievements": [
+      { "name": "Viking King" },
+      { "name": "Hidden Blade Master" }
+    ]
+  },
+  {
+    "name": "Spelunky 2",
+    "price": 24.99,
+    "genre": "Roguelike",
+    "achievements": [
+      { "name": "The True Adventurer" },
+      { "name": "Unstoppable" }
+    ]
+  },
+  {
+    "name": "DOOM Eternal",
+    "price": 59.99,
+    "genre": "FPS",
+    "achievements": [
+      { "name": "Doom Slayer" },
+      { "name": "The Unstoppable" }
+    ]
+  },
+  {
+    "name": "Persona 5 Royal",
+    "price": 59.99,
+    "genre": "JRPG",
+    "achievements": [
+      { "name": "Phantom Thief" },
+      { "name": "The Trickster" }
+    ]
+  },
+  {
+    "name": "Apex Legends",
+    "price": 0.00,
+    "genre": "Battle Royale",
+    "achievements": [
+      { "name": "Champion" },
+      { "name": "Top 5" }
+    ]
+  },
+  {
+    "name": "Fall Guys: Ultimate Knockout",
+    "price": 19.99,
+    "genre": "Party",
+    "achievements": [
+      { "name": "First Crown" },
+      { "name": "Champion of the Show" }
+    ]
+  },
+  {
+    "name": "Control",
+    "price": 39.99,
+    "genre": "Action-Adventure",
+    "achievements": [
+      { "name": "The Director" },
+      { "name": "Taken Control" }
+    ]
+  },
+  {
+    "name": "Monster Hunter: World",
+    "price": 49.99,
+    "genre": "Action RPG",
+    "achievements": [
+      { "name": "Monster Slayer" },
+      { "name": "The Hunter" }
+    ]
+  },
+  {
+    "name": "Among Us",
+    "price": 4.99,
+    "genre": "Party",
+    "achievements": [
+      { "name": "Imposter" },
+      { "name": "Crewmate" }
+    ]
+  },
+  {
+    "name": "Fallout 4",
+    "price": 39.99,
+    "genre": "RPG",
+    "achievements": [
+      { "name": "Vault Dweller" },
+      { "name": "The Sole Survivor" }
+    ]
+  },
+  {
+    "name": "Sekiro: Shadows Die Twice",
+    "price": 59.99,
+    "genre": "Action-Adventure",
+    "achievements": [
+      { "name": "Shinobi" },
+      { "name": "Immortal" }
+    ]
+  },
+  {
+    "name": "Destiny 2",
+    "price": 0.00,
+    "genre": "FPS",
+    "achievements": [
+      { "name": "Guardian" },
+      { "name": "The Light" }
+    ]
+  },
+  {
+    "name": "Final Fantasy VII Remake",
+    "price": 59.99,
+    "genre": "JRPG",
+    "achievements": [
+      { "name": "Cloud Strife" },
+      { "name": "Buster Sword Master" }
+    ]
+  },
+  {
+    "name": "Rocket League",
+    "price": 19.99,
+    "genre": "Sports",
+    "achievements": [
+      { "name": "Goal Scorer" },
+      { "name": "Champion" }
+    ]
+  },
+  {
+    "name": "GTA V",
+    "price": 29.99,
+    "genre": "Action-Adventure",
+    "achievements": [
+      { "name": "The Heist" },
+      { "name": "Master of the City" }
+    ]
+  },
+  {
+    "name": "The Last of Us Part II",
+    "price": 59.99,
+    "genre": "Action-Adventure",
+    "achievements": [
+      { "name": "Survivor" },
+      { "name": "The Firefly" }
+    ]
+  },
+  {
+    "name": "Death Stranding",
+    "price": 59.99,
+    "genre": "Action-Adventure",
+    "achievements": [
+      { "name": "The Deliverer" },
+      { "name": "Bridges" }
+    ]
+  },
+  {
+    "name": "Bloodborne",
+    "price": 39.99,
+    "genre": "Action RPG",
+    "achievements": [
+      { "name": "Hunter" },
+      { "name": "The Great One" }
+    ]
+  },
+  {
+    "name": "Monster Hunter Rise",
+    "price": 39.99,
+    "genre": "Action RPG",
+    "achievements": [
+      { "name": "Monster Hunter" },
+      { "name": "The Wyvern Slayer" }
+    ]
+  },
+  {
+    "name": "Watch Dogs: Legion",
+    "price": 59.99,
+    "genre": "Action-Adventure",
+    "achievements": [
+      { "name": "DedSec Member" },
+      { "name": "Revolutionary" }
+    ]
+  },
+  {
+    "name": "FIFA 23",
+    "price": 59.99,
+    "genre": "Sports",
+    "achievements": [
+      { "name": "The Champion" },
+      { "name": "Ultimate Squad" }
+    ]
+  },
+  {
+    "name": "Hitman 3",
+    "price": 59.99,
+    "genre": "Stealth",
+    "achievements": [
+      { "name": "Silent Assassin" },
+      { "name": "The Perfect Hit" }
+    ]
+  }
+]
