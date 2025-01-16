@@ -130,7 +130,7 @@ public class GameSystem {
                     break;
                 case "3":
                     System.out.println("Sorting games by price...");
-                    store.sortGamesByPrice();
+                    store.sortGamesByPriceAsync();
                     break;
                 case "4":
                     store.getAvailableGames().sort(Comparator.comparing(Game::getName));
@@ -138,7 +138,7 @@ public class GameSystem {
                     break;
                 case "5":
                     System.out.println("Grouping games by genre...");
-                    store.groupGamesByGenre();
+                    store.groupGamesByGenreAsync();
                     break;
                 case "6":
                     running = false;
@@ -188,7 +188,8 @@ public class GameSystem {
             System.out.println("1. View Account");
             System.out.println("2. Delete Account");
             System.out.println("3. Add Funds");
-            System.out.println("4. Back to Main Menu");
+            System.out.println("4. Check games");
+            System.out.println("5. Back to Main Menu");
             System.out.print("Choose an option: ");
 
             String choice = scanner.nextLine();
@@ -202,6 +203,7 @@ public class GameSystem {
 
                     if (users.isEmpty() || !users.contains(loggedInUser)) {
                         running = false;
+                        boolean deleted = true;
                     }
                     break;
                 case "3":
@@ -212,6 +214,9 @@ public class GameSystem {
                     }
                     break;
                 case "4":
+                        Game.printUserGameLibrary(loggedInUser);
+                    break;
+                case "5":
                     running = false;
                     break;
                 default:

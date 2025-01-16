@@ -1,11 +1,14 @@
 package models;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import services.UserDataManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
-
+import controllers.StoreController;
 import static main.GameSystem.validateTextInput;
 
 public class User implements Comparable<User>{
@@ -18,12 +21,15 @@ public class User implements Comparable<User>{
 
     // Constructor
     public User(String username, String password, double wallet) {
-        this.id = id;
         this.username = username;
         this.password = password;
-        this.wallet = 0.00f;
+        this.wallet = wallet;
         this.library = new ArrayList<>();
         this.friends = new ArrayList<>();
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
@@ -77,6 +83,10 @@ public class User implements Comparable<User>{
             System.out.println("Invalid choice.");
         }
     }
+    public void addFund(float amount) {
+            wallet += amount;
+            System.out.println("Funds added successfully. New balance: $" + wallet);
+    }
     public static float validatePositiveFloatInput(Scanner scanner, String prompt) {
         while (true) {
             try {
@@ -92,7 +102,6 @@ public class User implements Comparable<User>{
             }
         }
     }
-
     public static String validateCardNumber(Scanner scanner) {
         while (true) {
             System.out.print("Enter Card Number: ");
@@ -104,7 +113,6 @@ public class User implements Comparable<User>{
             }
         }
     }
-
     public static String validateExpiryDate(Scanner scanner) {
         while (true) {
             System.out.print("Enter Expiry Date (MM/YY): ");
@@ -149,6 +157,44 @@ public class User implements Comparable<User>{
             System.out.println("Account deletion cancelled.");
         }
     }
+    public void deleteUser(StoreController storeController) {
+
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationAlert.setTitle("Delete Account");
+        confirmationAlert.setHeaderText("Are you sure you want to delete your account?");
+        confirmationAlert.setContentText("This action cannot be undone.");
+
+        // Wait for user response
+        Optional<ButtonType> result = confirmationAlert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // If confirmed, proceed to delete the account
+            boolean success = UserDataManager.deleteUser(this.username);
+            if (success) {
+                // Inform the user that their account was successfully deleted
+                Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                successAlert.setTitle("Account Deleted");
+                successAlert.setHeaderText("Your account has been deleted.");
+                successAlert.showAndWait();
+
+                // Log out the user and clear the session
+                UserDataManager.deleteSession();
+            } else {
+                // In case of failure
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle("Deletion Failed");
+                errorAlert.setHeaderText("Account deletion failed.");
+                errorAlert.setContentText("Please try again later.");
+                errorAlert.showAndWait();
+            }
+        } else {
+            // If canceled, show cancellation message
+            Alert cancelAlert = new Alert(Alert.AlertType.INFORMATION);
+            cancelAlert.setTitle("Deletion Canceled");
+            cancelAlert.setHeaderText("Account deletion was canceled.");
+            cancelAlert.showAndWait();
+        }
+    }
+
     public String getUsername() { return username; }
     public String getPassword() { return password; }
     public double getWallet() { return wallet; }

@@ -10,12 +10,10 @@ public class Transaction implements I {
         this.gameName = gameName;
         this.amount = amount;
     }
-
     @Override
     public void purchase() {
         System.out.println("Processing purchase for game: " + gameName + " - Amount: $" + amount);
     }
-
     @Override
     public String toString() {
         return "Transaction: " + gameName + " - $" + amount;

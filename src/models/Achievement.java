@@ -12,15 +12,12 @@ public class Achievement implements J, Comparable<Achievement> {
     public int compareTo(Achievement other) {
         return this.name.compareTo(other.name); // Compare alphabetically by name
     }
-
     @Override
     public void share() {
         System.out.println("Sharing achievement: " + name);
     }
-
     @Override
     public String toString() {
         return "Achievement: " + name;
     }
-
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.AccountSettingsController">
+    <!-- BorderPane inside the AnchorPane -->
+    <BorderPane prefWidth="800" prefHeight="600" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <!-- Top Section -->
+        <top>
+            <HBox spacing="10" alignment="CENTER" style="-fx-background-color: #333; -fx-padding: 10;">
+                <Label text="Droplet Account Settings" style="-fx-text-fill: white; -fx-font-size: 18;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="storeButton" text="Store" onAction="#onStoreButtonClicked" />
+            </HBox>
+        </top>
+
+        <!-- Center Section -->
+        <center>
+            <VBox spacing="20" alignment="CENTER" style="-fx-background-color: #444; -fx-padding: 10;">
+                <!-- Account Info -->
+                <Label fx:id="accountInfoLabel" style="-fx-text-fill: white; -fx-font-size: 16;" />
+                <TextField fx:id="amountTextField" promptText="Enter amount to add" style="-fx-font-size: 14;" />
+                <!-- Buttons for Account Settings -->
+                <Button fx:id="deleteAccountButton" text="Delete Account" onAction="#onDeleteAccountClicked" style="-fx-font-size: 14;" />
+                <Button text="Add Funds" onAction="#onAddFundsClicked" style="-fx-font-size: 14;" />
+
+                <!-- Display Existing Cards or Option to Add New -->
+                <VBox fx:id="cardInfoVBox" spacing="10" alignment="CENTER">
+                    <Label text="Your Cards" style="-fx-text-fill: white; -fx-font-size: 16;" />
+
+                    <!-- ComboBox for selecting cards -->
+                    <ComboBox fx:id="cardComboBox" visible="false" style="-fx-font-size: 14;" />
+
+                    <!-- Add New Card Button -->
+                    <Button fx:id="addNewCardButton" text="Add New Card" onAction="#onAddNewCardClicked" style="-fx-font-size: 14;" />
+                </VBox>
+            </VBox>
+        </center>
+    </BorderPane>
+</AnchorPane>

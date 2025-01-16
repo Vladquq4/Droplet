@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+
+<VBox spacing="10" alignment="center" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
+    <Label text="Login to Droplet" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+    <HBox spacing="10" alignment="center">
+        <Label text="Username:"/>
+        <TextField fx:id="usernameField" promptText="Enter username" />
+    </HBox>
+
+    <HBox spacing="10" alignment="center">
+        <Label text="Password:"/>
+        <PasswordField fx:id="passwordField" promptText="Enter password"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="center">
+        <Button fx:id="loginButton" text="Login" onAction="#handleLogin"/>
+        <Button fx:id="registerButton" text="Register" onAction="#handleRegister"/>
+    </HBox>
+
+    <Label fx:id="errorLabel" style="-fx-text-fill: red;" visible="false"/>
+</VBox>
